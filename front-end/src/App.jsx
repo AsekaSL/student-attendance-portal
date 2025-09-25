@@ -5,6 +5,25 @@ import ProfessorManagement from "./pages/professormanagement";
 import CourseManagement from "./pages/coursemanagement";
 import Reports from "./pages/report";
 
+import Header from "./components/header";
+import Footer from "./components/footer";
+import Sidebar from "./components/sidebar";
+import SignIn from "./pages/signin";
+
+function Layout({ children }) {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <div className="flex flex-1">
+        <Sidebar />
+        <main className="flex-1 p-6 bg-gray-50">{children}</main>
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -17,6 +36,8 @@ function App() {
       </nav>
 
       <Routes>
+        <Route path="/signin" element={<SignIn />} />
+
         <Route path="/" element={<Home />} />
         <Route path="/students" element={<StudentManagement />} />
         <Route path="/professors" element={<ProfessorManagement />} />
