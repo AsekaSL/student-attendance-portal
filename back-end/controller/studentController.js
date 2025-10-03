@@ -1,62 +1,5 @@
 const Student = require('../model/student.js')
 
-const register = async (req, res) => {
-    try {
-        const {fullName, year, department, regiNumber, contactNum, address, email, indexNum, courseModules} = req.body;
-
-        if(!fullName) {
-            return res.status(401).send({success: false, message: 'Missing Full Name'})
-        }
-
-        if(!year) {
-            return res.status(401).send({success: false, message: 'Missing Year'})
-        }
-
-        if(!department) {
-            return res.status(401).send({success: false, message: 'Missing department'})
-        }
-
-        if(!regiNumber) {
-            return res.status(401).send({success: false, message: 'Missing Register Number'})
-        }
-
-        if(!contactNum) {
-            return res.status(401).send({success: false, message: 'Missing Contact Number'})
-        }
-
-        if(!address) {
-            return res.status(401).send({success: false, message: 'Missing address'})
-        }
-
-        if(!email) {
-            return res.status(401).send({success: false, message: 'Missing email'})
-        }
-
-        if(!indexNum) {
-            return res.status(401).send({success: false, message: 'Missing index Number'})
-        }
-
-        if(!courseModules) {
-            return res.status(401).send({success: false, message: 'Missing Course Modules'})
-        }
-
-        const existingUser = await Student.findOne({email})
-
-        if(existingUser) {
-            return res.status(401).send({success: false, message: 'Student already exists'})
-        }
-
-        const student = new Student({fullName, year, department, regiNumber, contactNum, address, email, indexNum, courseModules})
-
-        await student.save()
-
-        return res.status(201).send({success: true, message: 'Student registeration'})
-
-    } catch (error) {
-        return res.status(401).send({success: false, message: error.message})
-    }
-}
-
 const getStudent = async (req, res) => {
     try {
 
@@ -176,7 +119,6 @@ const deleteStudent = async (req, res) => {
     }
 }
 
-exports.register = register
 exports.getStudent = getStudent
 exports.getAllStudents = getAllStudents
 exports.update = update
