@@ -5,8 +5,7 @@ const userAuth = require('../middleware/userAuth.js');
 
 const router = express.Router();
 
-// Create (mark attendance)
-router.post('/mark', userAuth, attendanceController.addAttendance);
+router.post('/create', userAuth, attendanceController.addAttendance);
 
 // Update attendance
 router.put('/update/:id', userAuth, attendanceController.updateAttendance);

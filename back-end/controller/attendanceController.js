@@ -5,13 +5,13 @@ const Lecture = require("../model/Admin");
 // Add Attendance
 const addAttendance = async (req, res) => {
   try {
-    const { lectureId, studentId, status } = req.body;
+    const { lectureId, studentId, status, module } = req.body;
 
-    if (!lectureId || !studentId || !status) {
+    if (!lectureId || !studentId || !status || !module) {
       return res.status(400).send({ success: false, message: "Missing required fields" });
     }
 
-    const attendance = new Attendance({ lectureId, studentId, status });
+    const attendance = new Attendance({ lectureId, studentId, status, module });
     await attendance.save();
 
     return res.status(201).send({ success: true, message: "Attendance marked", data: attendance });
