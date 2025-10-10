@@ -4,8 +4,8 @@ function Footer() {
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-xl font-bold mb-4 gradient-text">EduPortal Prodigy</h3>
-                    <p class="text-gray-400">Empowering educational institutions with innovative technology solutions.</p>
+                    <h3 class="text-xl font-bold mb-4 gradient-text">EduPortal</h3>
+                    <p class="text-gray-400">Empowering educations with innovative technology solutions.</p>
                 </div>
                 <div>
                     <h4 class="font-semibold mb-4 text-gray-300">Quick Links</h4>
