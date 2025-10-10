@@ -5,7 +5,7 @@ import realtimeIcon from "../assets/updating.svg";
 
 function Home() {
   return (
-    <div className="flex flex-col items-center justify-start bg-gray-50 text-center py-10 px-10 min-h-[90vh] w-full">
+    <div className="flex flex-col items-center justify-start bg-gray-50 text-center py-10 px-10 w-full">
       <div className="w-full">
         <h2 className="text-3xl font-bold mb-3">
           Manage Every Aspect of Your Student Life Here!
@@ -31,7 +31,7 @@ function Home() {
               alt="Attendance"
               className="w-20 h-20 mx-auto mb-4"
             />
-            <h4 className="font-semibold text-xl mb-2">📅 Attendance Making</h4>
+            <h4 className="font-semibold text-xl mb-2">Attendance Making</h4>
             <p className="text-gray-600">
               Mark and track attendance with just a few clicks.
             </p>
@@ -43,7 +43,7 @@ function Home() {
               alt="Reports"
               className="w-20 h-20 mx-auto mb-4"
             />
-            <h4 className="font-semibold text-xl mb-2">📊 Generate Reports</h4>
+            <h4 className="font-semibold text-xl mb-2">Generate Reports</h4>
             <p className="text-gray-600">
               Create and export attendance summaries effortlessly.
             </p>
@@ -55,7 +55,7 @@ function Home() {
               alt="Real Time"
               className="w-20 h-20 mx-auto mb-4"
             />
-            <h4 className="font-semibold text-xl mb-2">⚡ Real-Time Updating</h4>
+            <h4 className="font-semibold text-xl mb-2">Real-Time Updating</h4>
             <p className="text-gray-600">
               Stay up-to-date with instant syncing of records.
             </p>
