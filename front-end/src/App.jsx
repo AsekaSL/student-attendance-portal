@@ -8,6 +8,7 @@ import Header from "./components/header";
 import Footer from "./components/footer";
 import Sidebar from "./components/sidebar";
 import SignIn from "./pages/signin";
+import AdminUserManagement from "./pages/adminusermanagement";
 
 import "./index.css";
 
@@ -68,6 +69,14 @@ function App() {
             <ProfessorManagement />
           </LayoutWithSidebar>
         }
+      />
+      <Route 
+        path="/adminuser" 
+        element={
+          <LayoutWithSidebar>
+            <AdminUserManagement />
+          </LayoutWithSidebar>
+        } 
       />
       <Route
         path="/courses"
