@@ -39,217 +39,226 @@ const ProfessorForm = () => {
     e.preventDefault();
     console.log("Form Data Submitted: ", formData);
     // backend submit logic here
+    alert("Professor data submitted (check console for details)");
   };
 
   return (
-    <div className="professor-container">
-      <div className="right-section">
-        <div className="all-form-controller">
-          {/* Form 1 */}
-          <form onSubmit={handleSubmit} className="first-form-container">
-            <div className="input-container">
-              <label htmlFor="full-name">Full Name</label>
-              <input
-                type="text"
-                name="fullName"
-                id="full-name"
-                required
-                value={formData.fullName}
-                onChange={handleChange}
-              />
-            </div>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+        <h2 className="text-2xl font-bold mb-6 text-center text-purple-700">
+          Professor Management
+        </h2>
 
-            <div className="input-container">
-              <label htmlFor="department">Department</label>
-              <select
-                name="department"
-                id="department"
-                required
-                value={formData.department}
-                onChange={handleDepartmentChange}
-              >
-                <option value="">Select</option>
-                <option value="CS">Computer Science</option>
-                <option value="SE">Software Engineering</option>
-                <option value="IS">Information Systems</option>
-              </select>
-            </div>
-
-            <div className="input-container">
-              <label htmlFor="subject">Subject</label>
-              <select
-                name="subject"
-                id="subject"
-                required
-                value={formData.subject}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                {subjects.map((sub, index) => (
-                  <option key={index} value={sub}>
-                    {sub}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="input-container">
-              <label htmlFor="uniID">University ID Number</label>
-              <input
-                type="text"
-                name="uniID"
-                id="uniID"
-                value={formData.uniID}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="input-container">
-              <label htmlFor="designation">Designation</label>
-              <input
-                type="text"
-                name="designation"
-                id="designation"
-                required
-                value={formData.designation}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="input-container">
-              <label htmlFor="contactNumber">Contact Number</label>
-              <input
-                type="tel"
-                name="contactNumber"
-                id="contactNumber"
-                required
-                value={formData.contactNumber}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="input-container">
-              <label htmlFor="dateofjoin">Date of Join</label>
-              <input
-                type="date"
-                name="dateofjoin"
-                id="dateofjoin"
-                required
-                value={formData.dateofjoin}
-                onChange={handleChange}
-              />
-            </div>
-          </form>
-
-          {/* Form 2 */}
-          <form onSubmit={handleSubmit} className="second-form-container">
-            <div className="input-container">
-              <label htmlFor="address">Address</label>
-              <input
-                type="text"
-                name="address"
-                id="address"
-                value={formData.address}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="input-container">
-              <label htmlFor="email">Email address</label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="input-container">
-              <label htmlFor="nicNO">NIC Number</label>
-              <input
-                type="text"
-                name="nicNO"
-                id="nicNO"
-                required
-                value={formData.nicNO}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="input-container">
-              <label htmlFor="status">Status</label>
-              <select
-                name="status"
-                id="status"
-                required
-                value={formData.status}
-                onChange={handleChange}
-              >
-                <option value="Active">Active</option>
-                <option value="On Leave">On Leave</option>
-                <option value="Retired">Retired</option>
-                <option value="Resigned">Resigned</option>
-              </select>
-            </div>
-
-            <button type="submit">Submit</button>
-            <button type="button">Update</button>
-            <button type="button">Delete</button>
-          </form>
-        </div>
-
-        {/* Search */}
-        <div className="search-container">
-          <div className="search-box">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Full Name */}
+          <div>
+            <label className="block mb-1 font-medium">Full Name</label>
             <input
               type="text"
-              name="search"
-              className="search-bar"
-              placeholder="Enter Professor Name"
-            />
-            <img
-              src="../../assets/admin/student-managment/search.png"
-              alt="search"
-              className="search-img"
+              name="fullName"
+              required
+              value={formData.fullName}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
-        </div>
 
-        {/* Table */}
-        <div className="table-container">
-          <table border="1">
-            <thead>
+          {/* University ID */}
+          <div>
+            <label className="block mb-1 font-medium">University ID</label>
+            <input
+              type="text"
+              name="uniID"
+              value={formData.uniID}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* Department */}
+          <div>
+            <label className="block mb-1 font-medium">Department</label>
+            <select
+              name="department"
+              required
+              value={formData.department}
+              onChange={handleDepartmentChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="">Select Department</option>
+              <option value="CS">Computer Science</option>
+              <option value="SE">Software Engineering</option>
+              <option value="IS">Information Systems</option>
+            </select>
+          </div>
+
+          {/* Subject */}
+          <div>
+            <label className="block mb-1 font-medium">Subject</label>
+            <select
+              name="subject"
+              required
+              value={formData.subject}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="">Select Subject</option>
+              {subjects.map((sub, index) => (
+                <option key={index} value={sub}>
+                  {sub}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Designation */}
+          <div>
+            <label className="block mb-1 font-medium">Designation</label>
+            <input
+              type="text"
+              name="designation"
+              required
+              value={formData.designation}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* Contact Number */}
+          <div>
+            <label className="block mb-1 font-medium">Contact Number</label>
+            <input
+              type="tel"
+              name="contactNumber"
+              required
+              value={formData.contactNumber}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* Date of Join */}
+          <div>
+            <label className="block mb-1 font-medium">Date of Join</label>
+            <input
+              type="date"
+              name="dateofjoin"
+              required
+              value={formData.dateofjoin}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block mb-1 font-medium">Email</label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* NIC */}
+          <div>
+            <label className="block mb-1 font-medium">NIC Number</label>
+            <input
+              type="text"
+              name="nicNO"
+              required
+              value={formData.nicNO}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* Address */}
+          <div className="md:col-span-2">
+            <label className="block mb-1 font-medium">Address</label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+
+          {/* Status */}
+          <div className="md:col-span-2">
+            <label className="block mb-1 font-medium">Status</label>
+            <select
+              name="status"
+              required
+              value={formData.status}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="Active">Active</option>
+              <option value="On Leave">On Leave</option>
+              <option value="Retired">Retired</option>
+              <option value="Resigned">Resigned</option>
+            </select>
+          </div>
+
+          {/* Buttons */}
+          <div className="md:col-span-2 flex gap-3 justify-center mt-4">
+            <button
+              type="submit"
+              className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 transition"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600 transition"
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition"
+            >
+              Delete
+            </button>
+          </div>
+        </form>
+
+        {/* Search and Table */}
+        <div className="mt-8">
+          <input
+            type="text"
+            placeholder="Search Professor..."
+            className="w-full border rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <table className="w-full border-collapse border border-gray-300 text-left">
+            <thead className="bg-purple-100">
               <tr>
-                <th>University ID Number</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Subject</th>
-                <th>Email</th>
+                <th className="border px-3 py-2">Uni ID</th>
+                <th className="border px-3 py-2">Name</th>
+                <th className="border px-3 py-2">Department</th>
+                <th className="border px-3 py-2">Subject</th>
+                <th className="border px-3 py-2">Email</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>00001</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
+                <td className="border px-3 py-2">00001</td>
+                <td className="border px-3 py-2">John Doe</td>
+                <td className="border px-3 py-2">CS</td>
+                <td className="border px-3 py-2">DBMS</td>
+                <td className="border px-3 py-2">john@example.com</td>
               </tr>
               <tr>
-                <td>00002</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-              </tr>
-              <tr>
-                <td>00003</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
+                <td className="border px-3 py-2">00002</td>
+                <td className="border px-3 py-2">Jane Smith</td>
+                <td className="border px-3 py-2">SE</td>
+                <td className="border px-3 py-2">Testing</td>
+                <td className="border px-3 py-2">jane@example.com</td>
               </tr>
             </tbody>
           </table>
@@ -260,4 +269,3 @@ const ProfessorForm = () => {
 };
 
 export default ProfessorForm;
-
