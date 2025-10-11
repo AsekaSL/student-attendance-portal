@@ -1,6 +1,6 @@
-const User = require('../model/User.js')
-const Student = require('../model/student.js')
-const Admin = require('../model/Admin.js')
+const User = require('../models/User.js')
+const Student = require('../models/student.js')
+const Admin = require('../models/Admin.js')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const validator = require('validator')
@@ -122,8 +122,7 @@ const register = async (req, res) => {
                 return res.status(401).send({ success: false, message: "Missing Address" });
             }
 
-            const admin = new Admin({fullName, department, subject, module, uniId, nic, email, contactNum, address}) = req.body
-
+            const admin = new Admin({fullName, department, subject, module, uniId, nic, email, contactNum, address});
             const response = await admin.save()
 
             if (!response) {
