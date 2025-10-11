@@ -1,12 +1,198 @@
+import React, { useState } from "react";
+
 export default function Reports() {
+  const [formData, setFormData] = useState({
+    courseModule: "",
+    year: "",
+    semester: "",
+    faculty: "",
+    department: "",
+    startDate: "",
+    endDate: "",
+    enableStudentSearch: false,
+    studentId: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [reportData, setReportData] = useState([]);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    // Placeholder: Replace with real API call
+    setTimeout(() => {
+      setReportData([
+        { id: "S001", name: "John Doe", attendance: 92, present: 46, absent: 4 },
+        { id: "S002", name: "Jane Smith", attendance: 85, present: 42, absent: 8 },
+      ]);
+      setLoading(false);
+    }, 1000);
+  };
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Reports</h2>
-      <p>
-        Here you will be able to generate attendance and performance reports.
-      </p>
-      <button>Generate Student Report</button><br /><br />
-      <button>Generate Course Report</button>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h2 className="text-2xl font-bold mb-6 text-gray-700">Generate Reports</h2>
+
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded shadow grid gap-4 md:grid-cols-3 mb-6"
+      >
+        <select
+          name="courseModule"
+          value={formData.courseModule}
+          onChange={handleChange}
+          required
+          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          <option value="">Select Course Module</option>
+          <option value="CS101">CS101</option>
+          <option value="CS102">CS102</option>
+        </select>
+
+        <select
+          name="year"
+          value={formData.year}
+          onChange={handleChange}
+          required
+          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          <option value="">Select Year</option>
+          <option value="1">Year 1</option>
+          <option value="2">Year 2</option>
+        </select>
+
+        <select
+          name="semester"
+          value={formData.semester}
+          onChange={handleChange}
+          required
+          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          <option value="">Select Semester</option>
+          <option value="1">Semester 1</option>
+          <option value="2">Semester 2</option>
+        </select>
+
+        <select
+          name="faculty"
+          value={formData.faculty}
+          onChange={handleChange}
+          required
+          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          <option value="">Select Faculty</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Science">Science</option>
+        </select>
+
+        <select
+          name="department"
+          value={formData.department}
+          onChange={handleChange}
+          required
+          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          <option value="">Select Department</option>
+          <option value="CS">Computer Science</option>
+          <option value="SE">Software Engineering</option>
+        </select>
+
+        <input
+          type="date"
+          name="startDate"
+          value={formData.startDate}
+          onChange={handleChange}
+          required
+          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="date"
+          name="endDate"
+          value={formData.endDate}
+          onChange={handleChange}
+          required
+          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+
+        <div className="flex items-center col-span-3">
+          <input
+            type="checkbox"
+            id="enableStudentSearch"
+            name="enableStudentSearch"
+            checked={formData.enableStudentSearch}
+            onChange={handleChange}
+            className="mr-2"
+          />
+          <label htmlFor="enableStudentSearch">Enable Search by Student</label>
+        </div>
+
+        {formData.enableStudentSearch && (
+          <input
+            type="text"
+            name="studentId"
+            placeholder="Enter Student ID"
+            value={formData.studentId}
+            onChange={handleChange}
+            className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 col-span-3"
+          />
+        )}
+
+        <button
+          type="submit"
+          className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition col-span-3 md:col-span-1"
+        >
+          Generate Report
+        </button>
+      </form>
+
+      {/* Loading */}
+      {loading && <div className="text-gray-600 mb-4">Loading...</div>}
+
+      {/* Report Table */}
+      {reportData.length > 0 && (
+        <div className="overflow-x-auto bg-white rounded shadow">
+          <table className="min-w-full border-collapse">
+            <thead className="bg-purple-100">
+              <tr>
+                <th className="px-4 py-2 border">Student ID</th>
+                <th className="px-4 py-2 border">Name</th>
+                <th className="px-4 py-2 border">Attendance %</th>
+                <th className="px-4 py-2 border">Present Days</th>
+                <th className="px-4 py-2 border">Absent Days</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reportData.map((r, index) => (
+                <tr key={index}>
+                  <td className="px-4 py-2 border">{r.id}</td>
+                  <td className="px-4 py-2 border">{r.name}</td>
+                  <td className="px-4 py-2 border">{r.attendance}%</td>
+                  <td className="px-4 py-2 border">{r.present}</td>
+                  <td className="px-4 py-2 border">{r.absent}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Placeholder for Chart */}
+      {reportData.length > 0 && (
+        <div className="mt-6">
+          <p className="text-gray-600">Pie chart placeholder (integration with chart.js or similar)</p>
+        </div>
+      )}
+
+      <button className="mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition">
+        Download PDF Report
+      </button>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import StudentManagement from "./pages/studentmanagement";
 import ProfessorManagement from "./pages/professormanagement";
@@ -8,10 +8,12 @@ import Header from "./components/header";
 import Footer from "./components/footer";
 import Sidebar from "./components/sidebar";
 import SignIn from "./pages/signin";
+import AdminUserManagement from "./pages/adminusermanagement";
 
 import "./index.css";
 
-function Layout({ children }) {
+// Layout with sidebar (for internal pages)
+function LayoutWithSidebar({ children }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -24,56 +26,75 @@ function Layout({ children }) {
   );
 }
 
+// Layout without sidebar (for home)
+function LayoutNoSidebar({ children }) {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-1 px-6 py-4 bg-gray-50">{children}</main>
+      <Footer />
+    </div>
+  );
+}
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Standalone SignIn page (no layout) */}
-        <Route path="/signin" element={<SignIn />} />
+    <Routes>
+      {/* Home page without sidebar */}
+      <Route
+        path="/"
+        element={
+          <LayoutNoSidebar>
+            <Home />
+          </LayoutNoSidebar>
+        }
+      />
 
-        {/* All main routes wrapped in Layout */}
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Home />
-            </Layout>
-          }
-        />
-        <Route
-          path="/students"
-          element={
-            <Layout>
-              <StudentManagement />
-            </Layout>
-          }
-        />
-        <Route
-          path="/professors"
-          element={
-            <Layout>
-              <ProfessorManagement />
-            </Layout>
-          }
-        />
-        <Route
-          path="/courses"
-          element={
-            <Layout>
-              <CourseManagement />
-            </Layout>
-          }
-        />
-        <Route
-          path="/reports"
-          element={
-            <Layout>
-              <Reports />
-            </Layout>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+      {/* Sign in page */}
+      <Route path="/signin" element={<SignIn />} />
+
+      {/* Internal pages with sidebar */}
+      <Route
+        path="/students"
+        element={
+          <LayoutWithSidebar>
+            <StudentManagement />
+          </LayoutWithSidebar>
+        }
+      />
+      <Route
+        path="/professors"
+        element={
+          <LayoutWithSidebar>
+            <ProfessorManagement />
+          </LayoutWithSidebar>
+        }
+      />
+      <Route 
+        path="/adminuser" 
+        element={
+          <LayoutWithSidebar>
+            <AdminUserManagement />
+          </LayoutWithSidebar>
+        } 
+      />
+      <Route
+        path="/courses"
+        element={
+          <LayoutWithSidebar>
+            <CourseManagement />
+          </LayoutWithSidebar>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <LayoutWithSidebar>
+            <Reports />
+          </LayoutWithSidebar>
+        }
+      />
+    </Routes>
   );
 }
 
