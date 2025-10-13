@@ -122,7 +122,7 @@ const register = async (req, res) => {
                 return res.status(401).send({ success: false, message: "Missing Address" });
             }
 
-            const admin = new Admin({fullName, department, subject, module, uniId, nic, email, contactNum, address}) = req.body
+            const admin = new Admin({fullName, department, subject, module, uniId, nic, email, contactNum, address})
 
             const response = await admin.save()
 

@@ -1,64 +1,114 @@
+import logo from "../assets/logo.jpg";
+
 function Footer() {
   return (
-    <footer class="bg-gray-900 text-white py-8 mt-0">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4 gradient-text">EduPortal</h3>
-                    <p class="text-gray-400">Empowering educations with innovative technology solutions.</p>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4 text-gray-300">Quick Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Home</a></li>
-                        <li><a href="#features" class="text-gray-400 hover:text-white transition-colors duration-200">Features</a></li>
-                        <li><a href="#services" class="text-gray-400 hover:text-white transition-colors duration-200">Services</a></li>
-                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors duration-200">About Us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4 text-gray-300">Resources</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Documentation</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">API Reference</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Tutorials</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Blog</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4 text-gray-300">Connect With Us</h4>
-                    <div class="flex gap-4 mb-4">
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200">
-                            <i data-feather="twitter" class="w-5 h-5"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-colors duration-200">
-                            <i data-feather="facebook" class="w-5 h-5"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-600 transition-colors duration-200">
-                            <i data-feather="instagram" class="w-5 h-5"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-500 transition-colors duration-200">
-                            <i data-feather="linkedin" class="w-5 h-5"></i>
-                        </a>
-                    </div>
-                    <p class="text-gray-400">Subscribe to our newsletter</p>
-                    <div class="flex mt-2">
-                        <input type="email" placeholder="Your email" class="px-3 py-2 bg-gray-800 text-white rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full"/>
-                        <button class="bg-indigo-600 px-4 py-2 rounded-r-lg hover:bg-indigo-700 transition-colors duration-200">
-                            <i data-feather="send" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
+    <footer className="bg-gradient-to-r from-purple-900 to-indigo-900 text-white py-8">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Main Content */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {/* Brand Section */}
+          <div className="md:col-span-1">
+            <div className="flex items-center mb-4">
+              <img
+                src={logo}
+                alt="EduPortal Logo"
+                className="h-10 w-10 rounded-full border-2 border-purple-300 object-cover mr-3"
+              />
+              <h3 className="text-xl font-bold text-white">EduPortal</h3>
             </div>
-            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm">© 2023 EduPortal Prodigy. All rights reserved.</p>
-                <div class="flex gap-6 mt-4 md:mt-0">
-                    <a href="#" class="text-gray-500 hover:text-white transition-colors duration-200 text-sm">Privacy Policy</a>
-                    <a href="#" class="text-gray-500 hover:text-white transition-colors duration-200 text-sm">Terms of Service</a>
-                    <a href="#" class="text-gray-500 hover:text-white transition-colors duration-200 text-sm">Cookie Policy</a>
-                </div>
+            <p className="text-purple-200 text-sm leading-relaxed mb-4">
+              Streamlining education with smart attendance management and innovative technology solutions.
+            </p>
+            <div className="flex gap-3">
+              <a
+                href="#"
+                className="w-8 h-8 rounded-full bg-purple-700 flex items-center justify-center hover:bg-purple-600 transition-colors duration-200 hover:scale-110 transform"
+                title="Follow on Facebook"
+              >
+                <i className="fab fa-facebook-f text-sm text-purple-200 hover:text-white"></i>
+              </a>
+              <a
+                href="#"
+                className="w-8 h-8 rounded-full bg-purple-700 flex items-center justify-center hover:bg-purple-600 transition-colors duration-200 hover:scale-110 transform"
+                title="Follow on Twitter"
+              >
+                <i className="fab fa-twitter text-sm text-purple-200 hover:text-white"></i>
+              </a>
+              <a
+                href="#"
+                className="w-8 h-8 rounded-full bg-purple-700 flex items-center justify-center hover:bg-purple-600 transition-colors duration-200 hover:scale-110 transform"
+                title="Connect on LinkedIn"
+              >
+                <i className="fab fa-linkedin-in text-sm text-purple-200 hover:text-white"></i>
+              </a>
+              <a
+                href="#"
+                className="w-8 h-8 rounded-full bg-purple-700 flex items-center justify-center hover:bg-purple-600 transition-colors duration-200 hover:scale-110 transform"
+                title="View on GitHub"
+              >
+                <i className="fab fa-github text-sm text-purple-200 hover:text-white"></i>
+              </a>
             </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-lg font-semibold mb-4 text-white">Quick Links</h4>
+            <div className="space-y-2">
+              <a href="/" className="text-purple-200 hover:text-white transition-colors duration-200 text-sm block flex items-center gap-2">
+                <i className="fas fa-home w-4 h-4"></i> Home
+              </a>
+              <a href="/features" className="text-purple-200 hover:text-white transition-colors duration-200 text-sm block flex items-center gap-2">
+                <i className="fas fa-bolt w-4 h-4"></i> Features
+              </a>
+              <a href="/services" className="text-purple-200 hover:text-white transition-colors duration-200 text-sm block flex items-center gap-2">
+                <i className="fas fa-tools w-4 h-4"></i> Services
+              </a>
+              <a href="/about" className="text-purple-200 hover:text-white transition-colors duration-200 text-sm block flex items-center gap-2">
+                <i className="fas fa-info-circle w-4 h-4"></i> About
+              </a>
+              <a href="/contact" className="text-purple-200 hover:text-white transition-colors duration-200 text-sm block flex items-center gap-2">
+                <i className="fas fa-envelope w-4 h-4"></i> Contact
+              </a>
+            </div>
+          </div>
+
+          {/* Newsletter Subscription */}
+          <div>
+            <h4 className="text-lg font-semibold mb-4 text-white">Stay Updated</h4>
+            <p className="text-purple-200 text-sm mb-4 leading-relaxed">
+              Subscribe to our newsletter for the latest updates and educational insights.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-3 py-2 bg-purple-800/50 border border-purple-600 rounded-lg text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent text-sm"
+              />
+              <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-lg text-white font-medium transition-all duration-200 hover:scale-105 text-sm whitespace-nowrap">
+                Subscribe
+              </button>
+            </div>
+            <p className="text-purple-300 text-xs mt-2">
+              We respect your privacy. Unsubscribe at any time.
+            </p>
+          </div>
         </div>
+
+        {/* Bottom Section */}
+        <div className="border-t border-purple-700 pt-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-purple-300 text-sm text-center sm:text-left">
+              © 2025 EduPortal. All rights reserved.
+            </p>
+            <div className="flex gap-6">
+              <a href="#" className="text-purple-300 hover:text-white transition-colors duration-200 text-sm">Privacy Policy</a>
+              <a href="#" className="text-purple-300 hover:text-white transition-colors duration-200 text-sm">Terms of Service</a>
+              <a href="#" className="text-purple-300 hover:text-white transition-colors duration-200 text-sm">Help Center</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </footer>
   );
 }
