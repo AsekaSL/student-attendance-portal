@@ -37,12 +37,23 @@ export default function Reports() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-2xl font-bold mb-6 text-gray-700">Generate Reports</h2>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-purple-700">Generate Reports</h1>
+        <div className="flex items-center gap-3">
+          <img
+            src="/user.jpg"
+            alt="Profile"
+            className="w-10 h-10 rounded-full"
+          />
+          <span className="font-medium">Admin</span>
+        </div>
+      </div>
 
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow grid gap-4 md:grid-cols-3 mb-6"
+        className="bg-white p-6 shadow-md rounded grid grid-cols-1 md:grid-cols-3 gap-6 mb-6"
       >
         <select
           name="courseModule"

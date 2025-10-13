@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 const ProfessorForm = () => {
-  const [department, setDepartment] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -25,11 +24,9 @@ const ProfessorForm = () => {
 
   const handleDepartmentChange = (e) => {
     const dept = e.target.value;
-    setDepartment(dept);
     setSubjects(departmentSubjects[dept] || []);
     setFormData({ ...formData, department: dept, subject: "" });
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -44,10 +41,20 @@ const ProfessorForm = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-purple-700">Professor Management</h1>
+        <div className="flex items-center gap-3">
+          <img
+            src="/user.jpg"
+            alt="Profile"
+            className="w-10 h-10 rounded-full"
+          />
+          <span className="font-medium">Admin</span>
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center text-purple-700">
-          Professor Management
-        </h2>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Full Name */}

@@ -46,7 +46,7 @@ function Header() {
 
 
   return (
-    <header className="flex justify-between items-center px-6 py-4 bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-200">
+    <header className="flex justify-between items-center px-6 py-4 bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-900 text-white shadow-lg sticky top-0 z-50 backdrop-blur-md">
       {/* Logo + Title */}
       <Link
         to="/"
@@ -55,9 +55,9 @@ function Header() {
         <img
           src={assets.logo}
           alt="EduPortal Logo"
-          className="h-10 w-10 rounded-full border-2 border-indigo-300 object-cover"
+          className="h-10 w-10 rounded-full border-2 border-purple-300 object-cover shadow-md"
         />
-        <h2 className="text-xl font-bold tracking-wide gradient-text">
+        <h2 className="text-xl font-bold tracking-wide text-white">
           EduPortal
         </h2>
       </Link>
@@ -66,15 +66,25 @@ function Header() {
       <nav className="hidden md:flex gap-8 font-medium items-center">
         <Link
           to="/"
-          className="text-indigo-600 hover:text-indigo-800 transition-colors duration-200 flex items-center gap-1"
+          className="text-purple-200 hover:text-white transition-colors duration-200 flex items-center gap-2 hover:scale-105 transform"
         >
           <i data-feather="home" className="w-4 h-4"></i> Home
         </Link>
-        <a
-          href="#features"
-          className="text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center gap-1"
+        <Link
+          to="/features"
+          className="text-purple-200 hover:text-white transition-colors duration-200 flex items-center gap-2 hover:scale-105 transform"
         >
           <i data-feather="zap" className="w-4 h-4"></i> Features
+        </Link>
+        <Link
+          to="/services"
+          className="text-purple-200 hover:text-white transition-colors duration-200 flex items-center gap-2 hover:scale-105 transform"
+        >
+          <i data-feather="tool" className="w-4 h-4"></i> Services
+        </Link>
+        <Link
+          to="/about"
+          className="text-purple-200 hover:text-white transition-colors duration-200 flex items-center gap-2 hover:scale-105 transform"
         </a>
         <Link
           to="/reports"
@@ -87,17 +97,24 @@ function Header() {
           className="text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center gap-1"
         >
           <i data-feather="info" className="w-4 h-4"></i> About
-        </a>
-        <a
-          href="#contact"
-          className="text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center gap-1"
+        </Link>
+        <Link
+          to="/contact"
+          className="text-purple-200 hover:text-white transition-colors duration-200 flex items-center gap-2 hover:scale-105 transform"
         >
           <i data-feather="mail" className="w-4 h-4"></i> Contact
-        </a>
+        </Link>
       </nav>
 
       {/* Buttons */}
       <div className="flex items-center gap-4">
+        {/* Get Started button (go to login) */}
+        <Link
+          to="/signin"
+          className="hidden md:block bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-6 py-2 rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium"
+        >
+          Get Started
+        </Link>
         {/* Notification bell */}
         <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors duration-200" onClick={() => loggout()}>
           <i data-feather="bell" className="w-5 h-5 text-gray-600"></i>
@@ -115,13 +132,10 @@ function Header() {
             {!isLoggedin ? 'Get Started' : 'Logout'}
             
         </button>
-        
-
-       
 
         {/* Mobile menu icon */}
-        <button className="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
-          <i data-feather="menu" className="w-5 h-5 text-gray-600"></i>
+        <button className="md:hidden p-2 rounded-full hover:bg-purple-800/50 transition-colors duration-200 hover:scale-110 transform">
+          <i data-feather="menu" className="w-5 h-5 text-purple-200"></i>
         </button>
       </div>
     </header>

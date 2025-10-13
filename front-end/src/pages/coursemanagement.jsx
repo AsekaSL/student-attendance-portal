@@ -39,10 +39,21 @@ export default function CourseManagement() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-2xl font-bold mb-6 text-gray-700">Course Unit Management</h2>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-purple-700">Course Unit Management</h1>
+        <div className="flex items-center gap-3">
+          <img
+            src="/user.jpg"
+            alt="Profile"
+            className="w-10 h-10 rounded-full"
+          />
+          <span className="font-medium">Admin</span>
+        </div>
+      </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-8 grid gap-4 md:grid-cols-3">
+      <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         <input
           type="text"
           name="code"
