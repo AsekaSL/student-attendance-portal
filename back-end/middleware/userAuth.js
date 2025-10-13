@@ -5,10 +5,10 @@ const userAuth = async (req, res, next) => {
         
         //Get the token from cookies
         const {token} = req.cookies;
-        
+
         //Check the login or not
         if(!token) {
-            return res.status(401).json({success: false, message: "Not Authorized. Login Again!"})
+            return res.json({success: false, message: "Not Authorized. Login Again!"})
         }
 
         //Get token decode

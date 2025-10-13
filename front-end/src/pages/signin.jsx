@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function SignIn() {
   const [username, setUsername] = useState("");
@@ -7,7 +10,9 @@ function SignIn() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const {backendUrl, setIsLoggedin, setRole, getAuthState} = useContext(AppContext)
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // DEMO CREDENTIALS
@@ -32,6 +37,24 @@ function SignIn() {
       })
       .catch((err) => setError(err.response?.data?.message || "Login failed"));
     */
+    axios.defaults.withCredentials = true
+
+    const {data} = await axios.post(backendUrl + '/auth/login', {username, password});
+
+    if(data.success) {
+      setIsLoggedin(true)
+      toast.success(data.message);
+      setRole(data.role)
+      if (data.role == 'admin') {
+        navigate("/students"); // Admin -> Student Management
+      } else if (data.role == 'lecture') {
+        navigate("/courses"); // Professor -> Course Management
+      } else if (data.role == 'student') {
+        navigate("/reports"); // Student -> Reports
+      }
+    }else {
+      toast.error(data.message);
+    }
   };
 
   return (
