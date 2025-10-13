@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
-import attendanceIcon from "../assets/attendance.svg";
-import reportIcon from "../assets/report.svg";
-import realtimeIcon from "../assets/updating.svg";
+import { assets } from "../assets/assests";
+import { useContext } from "react";
+import { AppContext } from "../context/AppContext";
 
 function Home() {
+
+  const {role} = useContext(AppContext);
+
   return (
     <div className="flex flex-col items-center justify-start bg-gray-50 text-center py-10 px-10 w-full">
       <div className="w-full">
@@ -15,19 +18,22 @@ function Home() {
           Your personal attendance tracking portal makes your life easier.
           Mark attendance, check your presence, and stay organized.
         </p>
-
-        <Link
-          to="/signin"
-          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-200"
-        >
-          Login
-        </Link>
+        {
+          !role && 
+          <Link
+            to="/signin"
+            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-200"
+          >
+            Login
+          </Link>
+        }
+        
 
         {/* Features Section */}
         <section className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
           <div className="border p-6 rounded-xl shadow hover:shadow-md transition">
             <img
-              src={attendanceIcon}
+              src={assets.attendance}
               alt="Attendance"
               className="w-20 h-20 mx-auto mb-4"
             />
@@ -39,7 +45,7 @@ function Home() {
 
           <div className="border p-6 rounded-xl shadow hover:shadow-md transition">
             <img
-              src={reportIcon}
+              src={assets.report}
               alt="Reports"
               className="w-20 h-20 mx-auto mb-4"
             />
@@ -51,7 +57,7 @@ function Home() {
 
           <div className="border p-6 rounded-xl shadow hover:shadow-md transition">
             <img
-              src={realtimeIcon}
+              src={assets.updating}
               alt="Real Time"
               className="w-20 h-20 mx-auto mb-4"
             />
