@@ -7,9 +7,13 @@ const validator = require('validator')
 
 const register = async (req, res) => {
     try {
-        const {email, password, role} = req.body;
+        const {username, password, role, email} = req.body;
 
         let message;
+
+        if (!username) {
+            return res.status(401).send({ success: false, message: "Missing Email" });
+        }
 
         if (!email) {
             return res.status(401).send({ success: false, message: "Missing Email" });
@@ -122,7 +126,7 @@ const register = async (req, res) => {
                 return res.status(401).send({ success: false, message: "Missing Address" });
             }
 
-            const admin = new Admin({fullName, department, subject, module, uniId, nic, email, contactNum, address}) = req.body
+            const admin = new Admin({fullName, department, subject, module, uniId, nic, email, contactNum, address})
 
             const response = await admin.save()
 
@@ -135,7 +139,7 @@ const register = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({name, email, password: hashedPassword})
+        const user = new User({username, email, password: hashedPassword})
 
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
@@ -153,38 +157,32 @@ const register = async (req, res) => {
 
 const login = async (req,res) => {
     try {
-        const {email, password} = req.body;
+        const {username, password} = req.body;
 
-        if (!email) {
-            return res.status(401).send({ success: false, message: "Missing Email" });
-        }
-
-        // Simple email regex validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(401).send({ success: false, message: "Invalid Email Format" });
+        if (!username) {
+            return res.send({ success: false, message: "Missing Username" });
         }
 
         if (!password) {
-            return res.status(401).send({ success: false, message: "Missing Password" });
+            return res.send({ success: false, message: "Missing Password" });
         }
 
         // Check minimum password length (example: 6 characters)
         if (password.length < 6) {
-            return res.status(401).send({ success: false, message: "Password must be at least 6 characters" });
+            return res.send({ success: false, message: "Password must be at least 6 characters" });
         }
 
-        const user = await User.findOne({email});
+        const user = await User.findOne({username});
 
         if(!user) {
-            return res.status(401).send({sucess: false, message: 'User not found'})
+            return res.send({sucess: false, message: 'User not found'})
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        // const isMatch = await bcrypt.compare(password, user.password);
 
-        if (!isMatch) {
-            return res.status(401).send({sucess: false, message: 'Invalid Password'})
-        }
+        // if (!isMatch) {
+        //     return res.send({sucess: false, message: 'Invalid Password'})
+        // }
 
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
 
@@ -195,10 +193,10 @@ const login = async (req,res) => {
             maxAge: 1*24*60*60*100 //Milisecond
         })
 
-        return res.status(201).send({success: true, message: 'Succsfully Login !', role: user.role})
+        return res.send({success: true, message: 'Succsfully Login !', role: user.role})
 
     } catch (error) {
-        return res.status(401).send({success: false, message: error.message})
+        return res.send({success: false, message: error.message})
     }
 }
 
@@ -421,6 +419,23 @@ const resetPassword = async (req, res) => {
     }
 }
 
+const isLogined = async (req, res) => {
+    try {
+        
+        const {userId} = req.body;
+        
+        const user = await User.findById(userId);
+        if(!user) {
+            return res.send({success: false, message: "Not logged in"})
+        }
+
+        return res.send({success: true, role: user.role})
+
+    } catch (error) {
+        return res.status(400).send({success: false, message: error.message})
+    }
+}
+
 exports.register = register
 exports.login = login
 exports.logout = logout
@@ -428,13 +443,4 @@ exports.sendVerifyOtp = sendVerifyOtp
 exports.verifyEmail = verifyEmail
 exports.sendResetOtp = sendResetOtp
 exports.resetPassword = resetPassword
-
-/*
-const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
-
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 1*24*60*60*100 //Milisecond
-        })*/
+exports.isLogined = isLogined;

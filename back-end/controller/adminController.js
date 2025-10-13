@@ -1,4 +1,4 @@
-const Admin = require('../models/Admin')
+const Admin = require('../model/Admin')
 
 // Get single admin by email
 const getAdmin = async (req, res) => {

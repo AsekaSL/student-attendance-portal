@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Schmea = mongoose.Schema
 
 const userSchema = new Schmea({
+    username: {type: String, required: true},
     email: {type: String, required: true},
     password: {type: String, default: '1234'},
     role: {type: String, enum: ['student', 'lecture', 'admin']},

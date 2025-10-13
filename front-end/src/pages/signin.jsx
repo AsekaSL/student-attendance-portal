@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function SignIn() {
   const [username, setUsername] = useState("");
@@ -7,31 +10,29 @@ function SignIn() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const {backendUrl, setIsLoggedin, setRole, getAuthState} = useContext(AppContext)
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // DEMO CREDENTIALS
-    if (username === "admin" && password === "admin123") {
-      navigate("/students"); // Admin -> Student Management
-    } else if (username === "prof" && password === "prof123") {
-      navigate("/courses"); // Professor -> Course Management
-    } else if (username === "student" && password === "student123") {
-      navigate("/reports"); // Student -> Reports
-    } else {
-      setError("Invalid username or password");
-    }
+    axios.defaults.withCredentials = true
 
-    // REAL BACKEND LOGIN (commented for demo)
-    /*
-    axios.post("http://localhost:5000/api/auth/login", { email: username, password })
-      .then((res) => {
-        const role = res.data.role;
-        if (role === "admin") navigate("/students");
-        else if (role === "lecturer") navigate("/courses");
-        else if (role === "student") navigate("/reports");
-      })
-      .catch((err) => setError(err.response?.data?.message || "Login failed"));
-    */
+    const {data} = await axios.post(backendUrl + '/auth/login', {username, password});
+
+    if(data.success) {
+      setIsLoggedin(true)
+      toast.success(data.message);
+      setRole(data.role)
+      if (data.role == 'admin') {
+        navigate("/students"); // Admin -> Student Management
+      } else if (data.role == 'lecture') {
+        navigate("/courses"); // Professor -> Course Management
+      } else if (data.role == 'student') {
+        navigate("/reports"); // Student -> Reports
+      }
+    }else {
+      toast.error(data.message);
+    }
   };
 
   return (
