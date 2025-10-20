@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { AppContext } from "../../context/AppContext";
 
 const StudentManagement = () => {
+
+  //Student detail form
   const [formData, setFormData] = useState({
     full_name: "",
     year: "",
@@ -10,10 +15,15 @@ const StudentManagement = () => {
     address: "",
     email: "",
     index_num: "",
+    academicYear: ''
   });
 
+  //search use state
   const [search, setSearch] = useState("");
   const [students, setStudents] = useState([]);
+
+  // context varibles
+  const {backendUrl} = useContext(AppContext);
 
   const handleChange = (e) => {
     setFormData({
@@ -22,28 +32,82 @@ const StudentManagement = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Add student to list (demo only)
     setStudents([...students, formData]);
-    setFormData({
-      full_name: "",
-      year: "",
-      dep_id: "",
-      regi_num: "",
-      contact_num: "",
-      address: "",
-      email: "",
-      index_num: "",
-    });
-    alert("Student added!");
+    
+    try {
+      
+      axios.defaults.withCredentials = true;
+
+      const {data} = await axios.post(backendUrl+'/student/add', {
+        fullName: formData.full_name,
+        year: formData.year,
+        regiNumber: formData.regi_num,
+        indexNum: formData.index_num,
+        email: formData.email,
+        contactNum: formData.contact_num,
+        address: formData.address,
+        department: formData.dep_id,
+        academicYear: formData.academicYear
+      });
+
+      if(data.success) {
+        toast.success(data.message)
+
+         setFormData({
+          full_name: "",
+          year: "",
+          dep_id: "",
+          regi_num: "",
+          contact_num: "",
+          address: "",
+          email: "",
+          index_num: "",
+          academicYear: ''
+        });
+        getAllStudents()
+
+      }else{
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error)
+    }
+
   };
 
-  const filteredStudents = students.filter(
-    (student) =>
-      student.full_name.toLowerCase().includes(search.toLowerCase()) ||
-      student.regi_num.toLowerCase().includes(search.toLowerCase())
-  );
+  // const filteredStudents = students.filter(
+  //   (student) =>
+  //     student.fullName.toLowerCase().includes(search.toLowerCase()) ||
+  //     student.regiNumber.toLowerCase().includes(search.toLowerCase())
+  // );
+
+  const getAllStudents = async () => {
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.get(backendUrl + '/student/getAll')
+
+      if(data.success) {
+        setStudents(data.message)
+      }else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getAllStudents();
+  },[])
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -169,6 +233,23 @@ const StudentManagement = () => {
           />
         </div>
 
+        <div>
+          <label className="block mb-1 font-medium">Year</label>
+          <select
+            name="academicYear"
+            value={formData.academicYear}
+            onChange={handleChange}
+            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+            required
+          >
+            <option value="">Select Academic Year</option>
+            <option value={1}>1st Year</option>
+            <option value={2}>2nd Year</option>
+            <option value={3}>3rd Year</option>
+            <option value={4}>4th Year</option>
+          </select>
+        </div>
+
         <div className="col-span-2 flex gap-4 mt-2">
           <button
             type="submit"
@@ -195,16 +276,16 @@ const StudentManagement = () => {
         <div className="p-4 border-b">
           <h2 className="text-xl font-bold text-purple-700">Student List</h2>
         </div>
-        {filteredStudents.length > 0 ? (
+        {students.length > 0 ? (
           <ul className="divide-y">
-            {filteredStudents.map((student, idx) => (
+            {students.map((student, idx) => (
               <li key={idx} className="px-4 py-3 flex justify-between items-center">
                 <div>
-                  <span className="font-medium">{student.full_name}</span>
-                  <span className="text-gray-500 ml-2">({student.regi_num})</span>
+                  <span className="font-medium">{student.fullName}</span>
+                  <span className="text-gray-500 ml-2">({student.regiNumber})</span>
                 </div>
                 <div className="text-sm text-gray-600">
-                  {student.dep_id} - Year {student.year}
+                  {student.department} - Year {student.year}
                 </div>
               </li>
             ))}

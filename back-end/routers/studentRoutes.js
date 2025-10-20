@@ -4,9 +4,16 @@ const studentController = require('../controller/studentController.js')
 
 const router = express.Router()
 
-router.get('/student', userAuth ,studentController.getStudent)
-router.get('/students', userAuth ,studentController.getAllStudents)
+router.post('/add', userAuth, studentController.addStudent)
+router.get('/get', userAuth ,studentController.getStudent)
+router.get('/getAll', userAuth ,studentController.getAllStudents)
 router.put('/update', userAuth , studentController.update)
 router.delete('/delete', userAuth ,studentController.deleteStudent)
+
+//Student view attendance
+router.get('/view-attend', userAuth, studentController.viewAttendance)
+
+
+router.get('/dashboard', userAuth, studentController.getDashboard)
 
 module.exports = router

@@ -34,35 +34,15 @@ import ViewAttendance from "./pages/student/ViewAttendance";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProfessorDashboard from "./pages/professor/ProfessorDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
-import Home from "./pages/home";
-import StudentManagement from "./pages/studentmanagement";
-import ProfessorManagement from "./pages/professormanagement";
-import CourseManagement from "./pages/coursemanagement";
-import Reports from "./pages/report";
-import Header from "./components/header";
-import Footer from "./components/footer";
-import Sidebar from "./components/sidebar";
-import SignIn from "./pages/signin";
-import AdminUserManagement from "./pages/adminusermanagement";
-import { ToastContainer } from "react-toastify";
+
 import "./index.css";
-import { useContext } from "react";
-import { AppContext } from "./context/AppContext";
-import QRCodeGenarate from "./pages/QRCodeGenarate";
-import VerifyingAttendance from "./pages/VerifyingAttendance";
+import { ToastContainer } from "react-toastify";
 
 // Admin Layout with admin sidebar
 function AdminLayout({ children }) {
-// Layout with sidebar (for internal pages)
-function LayoutWithSidebar({ children }) {
-
-  const {getAuthState, role} = useContext(AppContext)
-
-  getAuthState();
-  
   return (
     <div className="flex flex-col min-h-screen">
-      <Header role={role} />
+      <Header />
       <div className="flex flex-1">
         <AdminSidebar />
         <main className="flex-1 bg-gray-50">{children}</main>
@@ -115,325 +95,262 @@ function App() {
   return (
     <div>
       <ToastContainer/>
-        <Routes>
-          {/* Home page without sidebar */}
-          <Route
-            path="/"
-            element={
-              <LayoutNoSidebar>
-                <Home />
-              </LayoutNoSidebar>
-            }
-          />
-      {/* Features page */}
-      <Route
-        path="/features"
-        element={
-          <LayoutNoSidebar>
-            <Features />
-          </LayoutNoSidebar>
-        }
-      />
+      <Routes>
+        {/* Home page without sidebar */}
+        <Route
+          path="/"
+          element={
+            <LayoutNoSidebar>
+              <Home />
+            </LayoutNoSidebar>
+          }
+        />
 
-      {/* Services page */}
-      <Route
-        path="/services"
-        element={
-          <LayoutNoSidebar>
-            <Services />
-          </LayoutNoSidebar>
-        }
-      />
+        {/* Features page */}
+        <Route
+          path="/features"
+          element={
+            <LayoutNoSidebar>
+              <Features />
+            </LayoutNoSidebar>
+          }
+        />
 
-      {/* About page */}
-      <Route
-        path="/about"
-        element={
-          <LayoutNoSidebar>
-            <About />
-          </LayoutNoSidebar>
-        }
-      />
+        {/* Services page */}
+        <Route
+          path="/services"
+          element={
+            <LayoutNoSidebar>
+              <Services />
+            </LayoutNoSidebar>
+          }
+        />
 
-      {/* Contact page */}
-      <Route
-        path="/contact"
-        element={
-          <LayoutNoSidebar>
-            <Contact />
-          </LayoutNoSidebar>
-        }
-      />
+        {/* About page */}
+        <Route
+          path="/about"
+          element={
+            <LayoutNoSidebar>
+              <About />
+            </LayoutNoSidebar>
+          }
+        />
 
-      {/* Sign in page */}
-      <Route
-        path="/signin"
-        element={
-          <LayoutNoSidebar>
-            <SignIn />
-          </LayoutNoSidebar>
-        }
-      />
+        {/* Contact page */}
+        <Route
+          path="/contact"
+          element={
+            <LayoutNoSidebar>
+              <Contact />
+            </LayoutNoSidebar>
+          }
+        />
 
-      {/* Update Password page */}
-      <Route
-        path="/update-password"
-        element={
-          <LayoutNoSidebar>
-            <UpdatePassword />
-          </LayoutNoSidebar>
-        }
-      />
+        {/* Sign in page */}
+        <Route
+          path="/signin"
+          element={
+            <LayoutNoSidebar>
+              <SignIn />
+            </LayoutNoSidebar>
+          }
+        />
 
-      {/* QR Loading page (standalone) */}
-      <Route path="/qr-loading" element={<QrLoading />} />
+        {/* Update Password page */}
+        <Route
+          path="/update-password"
+          element={
+            <LayoutNoSidebar>
+              <UpdatePassword />
+            </LayoutNoSidebar>
+          }
+        />
 
-      {/* Admin Routes */}
-      <Route
-        path="/admin"
-        element={
-          <AdminLayout>
-            <AdminDashboard />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path="/students"
-        element={
-          <AdminLayout>
-            <StudentManagement />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path="/professors"
-        element={
-          <AdminLayout>
-            <ProfessorManagement />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path="/courses"
-        element={
-          <AdminLayout>
-            <CourseManagement />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path="/reports"
-        element={
-          <AdminLayout>
-            <Reports />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path="/adminuser"
-        element={
-          <AdminLayout>
-            <AdminUserManagement />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path="/course-unit-management"
-        element={
-          <AdminLayout>
-            <CourseUnitManagement />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path="/admin-professor-management"
-        element={
-          <AdminLayout>
-            <AdminProfessorManagement />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path="/admin-report-generation"
-        element={
-          <AdminLayout>
-            <ReportGeneration />
-          </AdminLayout>
-        }
-      />
+        {/* QR Loading page (standalone) */}
+        <Route path="/qr-loading/:id" element={<QrLoading />} />
 
-      {/* Professor Routes */}
-      <Route
-        path="/professor"
-        element={
-          <ProfessorLayout>
-            <ProfessorDashboard />
-          </ProfessorLayout>
-        }
-      />
-      <Route
-        path="/professor-course-management"
-        element={
-          <ProfessorLayout>
-            <ProfessorCourseManagement />
-          </ProfessorLayout>
-        }
-      />
-      <Route
-        path="/professor-notifications"
-        element={
-          <ProfessorLayout>
-            <ProfessorNotification />
-          </ProfessorLayout>
-        }
-      />
-      <Route
-        path="/professor-profile"
-        element={
-          <ProfessorLayout>
-            <ProfessorProfile />
-          </ProfessorLayout>
-        }
-      />
-      <Route
-        path="/professor-report-generation"
-        element={
-          <ProfessorLayout>
-            <ProfessorReportGeneration />
-          </ProfessorLayout>
-        }
-      />
-      <Route
-        path="/professor/student-notifications"
-        element={
-          <ProfessorLayout>
-            <StudentNotifications />
-          </ProfessorLayout>
-        }
-      />
-      <Route
-        path="/attendance-mark"
-        element={
-          <ProfessorLayout>
-            <AttendanceMark />
-          </ProfessorLayout>
-        }
-      />
-      <Route
-        path="/create-qr-session"
-        element={
-          <ProfessorLayout>
-            <CreateQrSession />
-          </ProfessorLayout>
-        }
-      />
-      <Route
-        path="/generated-qr"
-        element={
-          <ProfessorLayout>
-            <GeneratedQr />
-          </ProfessorLayout>
-        }
-      />
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <AdminLayout>
+              <AdminDashboard />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/students"
+          element={
+            <AdminLayout>
+              <StudentManagement />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/professors"
+          element={
+            <AdminLayout>
+              <ProfessorManagement />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/courses"
+          element={
+            <AdminLayout>
+              <CourseManagement />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <AdminLayout>
+              <Reports />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/adminuser"
+          element={
+            <AdminLayout>
+              <AdminUserManagement />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/course-unit-management"
+          element={
+            <AdminLayout>
+              <CourseUnitManagement />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin-professor-management"
+          element={
+            <AdminLayout>
+              <AdminProfessorManagement />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin-report-generation"
+          element={
+            <AdminLayout>
+              <ReportGeneration />
+            </AdminLayout>
+          }
+        />
 
-      {/* Student Routes */}
-      <Route
-        path="/student"
-        element={
-          <StudentLayout>
-            <StudentDashboard />
-          </StudentLayout>
-        }
-      />
-      <Route
-        path="/student-profile"
-        element={
-          <StudentLayout>
-            <StudentProfile />
-          </StudentLayout>
-        }
-      />
-      <Route
-        path="/view-attendance"
-        element={
-          <StudentLayout>
-            <ViewAttendance />
-          </StudentLayout>
-        }
-      />
-      <Route
-        path="/student-notifications"
-        element={
-          <StudentLayout>
-            <StudentNotificationsPanel />
-          </StudentLayout>
-        }
-      />
-    </Routes>
-          {/* Sign in page */}
-          <Route path="/signin" element={<SignIn />} />
+        {/* Professor Routes */}
+        <Route
+          path="/professor"
+          element={
+            <ProfessorLayout>
+              <ProfessorDashboard />
+            </ProfessorLayout>
+          }
+        />
+        <Route
+          path="/professor-course-management"
+          element={
+            <ProfessorLayout>
+              <ProfessorCourseManagement />
+            </ProfessorLayout>
+          }
+        />
+        <Route
+          path="/professor-notifications"
+          element={
+            <ProfessorLayout>
+              <ProfessorNotification />
+            </ProfessorLayout>
+          }
+        />
+        <Route
+          path="/professor-profile"
+          element={
+            <ProfessorLayout>
+              <ProfessorProfile />
+            </ProfessorLayout>
+          }
+        />
+        <Route
+          path="/professor-report-generation"
+          element={
+            <ProfessorLayout>
+              <ProfessorReportGeneration />
+            </ProfessorLayout>
+          }
+        />
+        <Route
+          path="/professor/student-notifications"
+          element={
+            <ProfessorLayout>
+              <StudentNotifications />
+            </ProfessorLayout>
+          }
+        />
+        <Route
+          path="/attendance-mark"
+          element={
+            <ProfessorLayout>
+              <AttendanceMark />
+            </ProfessorLayout>
+          }
+        />
+        <Route
+          path="/create-qr-session"
+          element={
+            <ProfessorLayout>
+              <CreateQrSession />
+            </ProfessorLayout>
+          }
+        />
+        <Route
+          path="/generated-qr"
+          element={
+            <ProfessorLayout>
+              <GeneratedQr />
+            </ProfessorLayout>
+          }
+        />
 
-          {/* Internal pages with sidebar */}
-          <Route
-            path="/students"
-            element={
-              <LayoutWithSidebar>
-                <StudentManagement />
-              </LayoutWithSidebar>
-            }
-          />
-          <Route
-            path="/professors"
-            element={
-              <LayoutWithSidebar>
-                <ProfessorManagement />
-              </LayoutWithSidebar>
-            }
-          />
-          <Route 
-            path="/adminuser" 
-            element={
-              <LayoutWithSidebar>
-                <AdminUserManagement />
-              </LayoutWithSidebar>
-            } 
-          />
-          <Route
-            path="/courses"
-            element={
-              <LayoutWithSidebar>
-                <CourseManagement />
-              </LayoutWithSidebar>
-            }
-          />
-          <Route
-            path="/reports"
-            element={
-              <LayoutWithSidebar>
-                <Reports />
-              </LayoutWithSidebar>
-            }
-          />
-
-          <Route
-            path="/qrcode"
-            element={
-              <LayoutWithSidebar>
-                <QRCodeGenarate/>
-              </LayoutWithSidebar>
-            }
-          />
-
-            <Route
-            path="/attendent/:id"
-            element={
-              <LayoutWithSidebar>
-                <VerifyingAttendance />
-              </LayoutWithSidebar>
-            }
-          />
-
-          </Routes>
+        {/* Student Routes */}
+        <Route
+          path="/student"
+          element={
+            <StudentLayout>
+              <StudentDashboard />
+            </StudentLayout>
+          }
+        />
+        <Route
+          path="/student-profile"
+          element={
+            <StudentLayout>
+              <StudentProfile />
+            </StudentLayout>
+          }
+        />
+        <Route
+          path="/view-attendance"
+          element={
+            <StudentLayout>
+              <ViewAttendance />
+            </StudentLayout>
+          }
+        />
+        <Route
+          path="/student-notifications"
+          element={
+            <StudentLayout>
+              <StudentNotificationsPanel />
+            </StudentLayout>
+          }
+        />
+      </Routes>
     </div>
   );
 }

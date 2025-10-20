@@ -1,14 +1,16 @@
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {AppContext} from '../../context/AppContext.jsx'
 
 const ProfessorDashboard = () => {
   // Mock data for demonstration
-  const stats = [
+  const [stats, setStats] = useState([
     { title: "Total Students", value: "45", icon: "👥" },
     { title: "Courses Teaching", value: "3", icon: "📚" },
     { title: "Today's Attendance", value: "92%", icon: "📊" },
     { title: "Pending Tasks", value: "2", icon: "📝" },
-  ];
+  ])
 
   const navigationItems = [
     { path: "/create-qr-session", label: "Create QR Session", icon: "📱" },
@@ -19,11 +21,44 @@ const ProfessorDashboard = () => {
     { path: "/professor-profile", label: "Profile Update", icon: "👤" },
   ];
 
-  const recentAttendance = [
+  const [recentAttendance, setRecentAttendance] = useState([
     { course: "CS101", students: 35, present: 32, date: "2025-10-12" },
     { course: "SE201", students: 28, present: 26, date: "2025-10-12" },
     { course: "IS301", students: 22, present: 21, date: "2025-10-11" },
-  ];
+  ])
+
+  const {backendUrl} = useContext(AppContext)
+
+  const getDashbord = async () => {
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      
+
+      const {data} = await axios.get(backendUrl + '/professor/dashbord')
+
+      
+
+      if(data.success) {
+        setStats([
+          { title: "Total Students", value: data.message.totalStudents , icon: "👥" },
+          { title: "Courses Teaching", value: data.message.courseCount , icon: "📚" },
+          { title: "Today's Attendance", value: data.message.attendancePercentage , icon: "📊" },
+          { title: "Pending Tasks", value: "2", icon: "📝" },
+        ])
+
+        setRecentAttendance(data.message.recentAttendance)
+      }
+
+    } catch (error) {
+      
+    }
+  }
+
+  useEffect(() => {
+    getDashbord()
+  },[])
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">

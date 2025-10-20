@@ -1,19 +1,22 @@
 const User = require('../model/User.js')
-const Student = require('../model/student.js')
+const Student = require('../model/Student.js')
 const Admin = require('../model/Admin.js')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const validator = require('validator')
+const Professor = require('../model/Professor.js')
 
 const register = async (req, res) => {
     try {
-        const {username, password, role, email} = req.body;
+        const {email, password, role} = req.body;
+
+        const existingUser = await User.findOne({email})
+
+        if(existingUser) {
+            return res.send({success: false, message: "Someone using thing email , Please chanage the email"})
+        }
 
         let message;
-
-        if (!username) {
-            return res.status(401).send({ success: false, message: "Missing Email" });
-        }
 
         if (!email) {
             return res.status(401).send({ success: false, message: "Missing Email" });
@@ -139,7 +142,7 @@ const register = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({username, email, password: hashedPassword})
+        const user = new User({name, email, password: hashedPassword})
 
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
@@ -160,7 +163,9 @@ const login = async (req,res) => {
         const {username, password} = req.body;
 
         if (!username) {
-            return res.send({ success: false, message: "Missing Username" });
+            return res.send({ success: false, message: "Missing Email" });
+        }else if (!validator.isEmail(username)) {
+            return res.send({ success: false, message: "Invalid Email" });
         }
 
         if (!password) {
@@ -172,10 +177,26 @@ const login = async (req,res) => {
             return res.send({ success: false, message: "Password must be at least 6 characters" });
         }
 
-        const user = await User.findOne({username});
+        let user = await User.findOne({email: username});
 
         if(!user) {
-            return res.send({sucess: false, message: 'User not found'})
+            
+            const student = await Student.findOne({email: username})
+            const professor = await Professor.findOne({email: username})
+
+            let newUser;
+
+            if(student) {
+                newUser = new User({email: student.email, role: 'student'})
+                await newUser.save()
+            }else if (professor) {
+                newUser = new User({email: professor.email, role: 'professor'})
+                await newUser.save()
+            }else {
+                return res.send({sucess: false, message: 'User not found'})
+            }
+            
+            user = newUser;
         }
 
         // const isMatch = await bcrypt.compare(password, user.password);
@@ -190,7 +211,7 @@ const login = async (req,res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 1*24*60*60*100 //Milisecond
+            maxAge: 1*24*60*60*100 //Milisecond 
         })
 
         return res.send({success: true, message: 'Succsfully Login !', role: user.role})
@@ -208,9 +229,28 @@ const logout = async (req, res) => {
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
         })
 
-        return res.status(201).send({success: true, message: 'Logged out'})
+        return res.send({success: true, message: 'Logged out'})
     } catch (error) {
-        return res.status(401).send({success: false, message: error.message})
+        return res.send({success: false, message: error.message})
+    }
+}
+
+const isAuth = async (req, res) => {
+    try {
+        
+        const {userId} = req.body;
+
+        const user = await User.findById(userId)
+
+        if(!user) {
+            return res.send({success: false, message: 'Please re-login User not defined'})
+        }
+
+        return res.send({success: true, message: 'Logged in', role: user.role})
+
+    } catch (error) {
+        console.log(error)
+        return res.send(error.message)
     }
 }
 
@@ -419,23 +459,6 @@ const resetPassword = async (req, res) => {
     }
 }
 
-const isLogined = async (req, res) => {
-    try {
-        
-        const {userId} = req.body;
-        
-        const user = await User.findById(userId);
-        if(!user) {
-            return res.send({success: false, message: "Not logged in"})
-        }
-
-        return res.send({success: true, role: user.role})
-
-    } catch (error) {
-        return res.status(400).send({success: false, message: error.message})
-    }
-}
-
 exports.register = register
 exports.login = login
 exports.logout = logout
@@ -443,4 +466,14 @@ exports.sendVerifyOtp = sendVerifyOtp
 exports.verifyEmail = verifyEmail
 exports.sendResetOtp = sendResetOtp
 exports.resetPassword = resetPassword
-exports.isLogined = isLogined;
+exports.isAuth = isAuth;
+
+/*
+const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            maxAge: 1*24*60*60*100 //Milisecond
+        })*/

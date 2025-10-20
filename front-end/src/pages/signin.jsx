@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 function SignIn() {
   const [username, setUsername] = useState("");
@@ -10,20 +10,52 @@ function SignIn() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const {backendUrl, setIsLoggedin, setRole, getAuthState} = useContext(AppContext)
+  const {backendUrl, setIsLoggedIn, setRole} = useContext(AppContext)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // DEMO CREDENTIALS
-    if (username === "admin" && password === "admin123") {
-      navigate("/admin"); // Admin -> Admin Dashboard
-    } else if (username === "prof" && password === "prof123") {
-      navigate("/professor"); // Professor -> Professor Dashboard
-    } else if (username === "student" && password === "student123") {
-      navigate("/student"); // Student -> Student Dashboard
-    } else {
-      setError("Invalid username or password");
+    /* DEMO CREDENTIALS
+    // if (username === "admin" && password === "admin123") {
+    //   navigate("/admin"); // Admin -> Admin Dashboard
+    // } else if (username === "prof" && password === "prof123") {
+    //   navigate("/professor"); // Professor -> Professor Dashboard
+    // } else if (username === "student" && password === "student123") {
+    //   navigate("/student"); // Student -> Student Dashboard
+    // } else {
+    //   setError("Invalid username or password");
+    // }
+    */
+
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.post(backendUrl+'/auth/login', {username, password})
+
+      if(data.success) {
+        
+        toast.success(data.message)
+        setIsLoggedIn(true)
+        setRole(data.role)
+
+
+        if (data.role == 'student') {
+          navigate("/student");
+        }else if (data.role == 'professor') {
+          navigate("/professor");
+        }else if ( data.role == 'admin' ) {
+          navigate("/admin");
+        }
+        
+
+      }else{
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
     }
 
     // REAL BACKEND LOGIN (commented for demo)
@@ -37,24 +69,6 @@ function SignIn() {
       })
       .catch((err) => setError(err.response?.data?.message || "Login failed"));
     */
-    axios.defaults.withCredentials = true
-
-    const {data} = await axios.post(backendUrl + '/auth/login', {username, password});
-
-    if(data.success) {
-      setIsLoggedin(true)
-      toast.success(data.message);
-      setRole(data.role)
-      if (data.role == 'admin') {
-        navigate("/students"); // Admin -> Student Management
-      } else if (data.role == 'lecture') {
-        navigate("/courses"); // Professor -> Course Management
-      } else if (data.role == 'student') {
-        navigate("/reports"); // Student -> Reports
-      }
-    }else {
-      toast.error(data.message);
-    }
   };
 
   return (

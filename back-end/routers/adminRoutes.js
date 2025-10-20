@@ -9,4 +9,7 @@ router.get('/admins', userAuth ,adminController.getAllAdmins)
 router.put('/update', userAuth , adminController.updateAdmin)
 router.delete('/delete', userAuth ,adminController.deleteAdmin)
 
+
+router.get('/dashboard', userAuth, adminController.getDashboard)
+
 module.exports = router

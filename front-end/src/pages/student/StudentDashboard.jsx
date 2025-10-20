@@ -1,14 +1,19 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AppContext } from "../../context/AppContext";
 
 const StudentDashboard = () => {
   // Mock data for demonstration
-  const stats = [
+  const [stats, setStats] = useState([
     { title: "Attendance Rate", value: "85%", icon: "📊" },
     { title: "Total Classes", value: "120", icon: "📚" },
     { title: "Present Days", value: "102", icon: "✅" },
     { title: "Absent Days", value: "18", icon: "❌" },
-  ];
+  ]);
+
+  const [recentAttendance, setRecentAttendance] = useState([]);
 
   const navigationItems = [
     { path: "/view-attendance", label: "View Attendance", icon: "📊" },
@@ -16,18 +21,45 @@ const StudentDashboard = () => {
     { path: "/student-profile", label: "Update Your Profile", icon: "👤" },
   ];
 
-  const recentAttendance = [
-    { course: "CS101", status: "Present", date: "2025-10-12", time: "09:00 AM" },
-    { course: "SE201", status: "Present", date: "2025-10-11", time: "11:00 AM" },
-    { course: "IS301", status: "Absent", date: "2025-10-10", time: "02:00 PM" },
-    { course: "CS101", status: "Present", date: "2025-10-09", time: "09:00 AM" },
-    { course: "SE201", status: "Present", date: "2025-10-08", time: "11:00 AM" },
-  ];
+  const {backendUrl} = useContext(AppContext)
+
+  const getTheData = async () => {
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.get(backendUrl + '/student/dashboard')
+
+      if(data.success) {
+        setStats([
+          { title: "Attendance Rate", value: data.message.attendanceRate, icon: "📊" },
+          { title: "Total Classes", value: data.message.totalClasses, icon: "📚" },
+          { title: "Present Days", value: data.message.presentDays, icon: "✅" },
+          { title: "Absent Days", value: data.message.absentDays, icon: "❌" },
+        ])
+
+        setRecentAttendance(data.message.recentAttendance)
+        console.log(data.message.recentAttendance)
+      }else{
+        toast.error(data.message)
+      }
+      
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error)
+    }
+  } 
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    getTheData()
+  },[])
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6" onClick={() => navigate('/qr-loading')}>
         <h1 className="text-3xl font-bold text-purple-700">Student Dashboard</h1>
         <div className="flex items-center gap-3">
           <img
@@ -90,14 +122,14 @@ const StudentDashboard = () => {
             <tbody>
               {recentAttendance.map((record, index) => (
                 <tr key={index} className="border-b">
-                  <td className="py-2">{record.course}</td>
+                  <td className="py-2">{record.courseId?.code}</td>
                   <td className="py-2">
                     <span className={`px-2 py-1 rounded text-sm ${
-                      record.status === 'Present'
+                      record.status === 'present'
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
                     }`}>
-                      {record.status}
+                      {record.status == 'present' ? 'Present' : 'Absant'}
                     </span>
                   </td>
                   <td className="py-2">{record.date}</td>

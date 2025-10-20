@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import React, { useState, useEffect, useContext } from "react";
+import { AppContext } from "../../context/AppContext";
+import { toast } from "react-toastify";
 
 const AttendanceMark = () => {
   const [courses, setCourses] = useState([]);
@@ -8,6 +11,8 @@ const AttendanceMark = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const {backendUrl} = useContext(AppContext)
 
   useEffect(() => {
     loadProfessorCourses();
@@ -22,15 +27,16 @@ const AttendanceMark = () => {
   const loadProfessorCourses = async () => {
     try {
       // Mock API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const mockCourses = [
-        { id: "CS101", name: "Introduction to Programming", schedule: "Mon/Wed 9:00 AM" },
-        { id: "SE201", name: "Software Engineering", schedule: "Tue/Thu 11:00 AM" },
-        { id: "IS301", name: "Information Systems", schedule: "Mon/Wed 2:00 PM" },
-      ];
+      axios.defaults.withCredentials = true
 
-      setCourses(mockCourses);
+      const {data} = await axios.get(backendUrl + '/professor/get-attendance');
+
+      if(data.success) {
+        setCourses(data.message);
+      }
+
+      
     } catch {
       setError("Failed to load courses. Please try again.");
     }
@@ -38,31 +44,17 @@ const AttendanceMark = () => {
 
   const loadStudentsForCourse = async (courseId) => {
     try {
-      // Mock API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 800));
 
-      // In a real app, you'd fetch students based on courseId
-      console.log(`Loading students for course: ${courseId}`);
+      axios.defaults.withCredentials = true
+      
+      const {data} = await axios.get(backendUrl + `/professor/get-attendance-not-approval/${selectedCourse}`)
 
-      const mockStudents = [
-        { id: "ST001", name: "Alice Johnson", regNumber: "2024001" },
-        { id: "ST002", name: "Bob Smith", regNumber: "2024002" },
-        { id: "ST003", name: "Carol Davis", regNumber: "2024003" },
-        { id: "ST004", name: "David Wilson", regNumber: "2024004" },
-        { id: "ST005", name: "Eva Brown", regNumber: "2024005" },
-        { id: "ST006", name: "Frank Miller", regNumber: "2024006" },
-        { id: "ST007", name: "Grace Lee", regNumber: "2024007" },
-        { id: "ST008", name: "Henry Taylor", regNumber: "2024008" },
-      ];
-
-      setStudents(mockStudents);
-
-      // Initialize attendance data
-      const initialAttendance = {};
-      mockStudents.forEach(student => {
-        initialAttendance[student.id] = "present"; // Default to present
-      });
-      setAttendanceData(initialAttendance);
+      if (data.success) {
+        setStudents(data.message)
+        
+      }else {
+        setError(data.message)
+      }
     } catch {
       setError("Failed to load students. Please try again.");
     }
@@ -98,6 +90,8 @@ const AttendanceMark = () => {
       return;
     }
 
+    saveAttendance()
+
     setLoading(true);
     setError("");
     setSuccess("");
@@ -105,17 +99,6 @@ const AttendanceMark = () => {
     try {
       // Mock API call - replace with actual API
       await new Promise(resolve => setTimeout(resolve, 2000));
-
-      const attendanceSummary = {
-        course: selectedCourse,
-        date: new Date().toISOString().split('T')[0],
-        totalStudents: students.length,
-        present: Object.values(attendanceData).filter(status => status === "present").length,
-        absent: Object.values(attendanceData).filter(status => status === "absent").length,
-        late: Object.values(attendanceData).filter(status => status === "late").length,
-      };
-
-      setSuccess(`Attendance marked successfully! ${attendanceSummary.present} present, ${attendanceSummary.absent} absent, ${attendanceSummary.late} late.`);
 
       // Reset form
       setSelectedCourse("");
@@ -140,6 +123,25 @@ const AttendanceMark = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  const saveAttendance = async () => {
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.post(backendUrl + '/professor/save-attend', {sessionId: selectedCourse})
+
+      if(data.success) {
+        toast.success(data.message)
+        loadProfessorCourses()
+      }else{
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      setError(error.message)
+    }
+  }
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -189,8 +191,8 @@ const AttendanceMark = () => {
           >
             <option value="">Choose a course...</option>
             {courses.map(course => (
-              <option key={course.id} value={course.id}>
-                {course.id} - {course.name} ({course.schedule})
+              <option key={course.id} value={course._id}>
+                {course.courseCode} - {course.title} ({course.date})
               </option>
             ))}
           </select>
@@ -229,33 +231,31 @@ const AttendanceMark = () => {
             </h3>
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {students.map(student => (
-                <div key={student.id} className="flex items-center justify-between p-4 border rounded">
+                <div key={student.studentId._id} className="flex items-center justify-between p-4 border rounded">
                   <div className="flex items-center gap-3">
                     <img
-                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.id}`}
-                      alt={student.name}
+                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${student.studentId._id}`}
+                      alt={student.studentId.fullName}
                       className="w-10 h-10 rounded-full"
                     />
                     <div>
-                      <div className="font-medium">{student.name}</div>
-                      <div className="text-sm text-gray-600">{student.regNumber}</div>
+                      <div className="font-medium">{student.studentId.fullName}</div>
+                      <div className="text-sm text-gray-600">{student.studentId.regiNumber}</div>
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    {["present", "late", "absent"].map(status => (
+                    {
                       <button
-                        key={status}
+                        key={student.status}
                         type="button"
-                        onClick={() => handleAttendanceChange(student.id, status)}
+                        onClick={() => handleAttendanceChange(student.studentId, student.status)}
                         className={`px-3 py-1 rounded text-sm font-medium capitalize transition ${
-                          attendanceData[student.id] === status
-                            ? getStatusColor(status)
-                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                          getStatusColor(student.status)
                         }`}
                       >
-                        {status}
+                        {student.status}
                       </button>
-                    ))}
+                    }
                   </div>
                 </div>
               ))}

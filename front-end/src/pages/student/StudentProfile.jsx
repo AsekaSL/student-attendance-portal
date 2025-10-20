@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import React, { useState, useEffect, useContext } from "react";
+import { AppContext } from "../../context/AppContext";
+import { toast } from "react-toastify";
 
 const StudentProfile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -7,48 +10,70 @@ const StudentProfile = () => {
   const [success, setSuccess] = useState("");
   const [showChangeRequestModal, setShowChangeRequestModal] = useState(false);
   const [changeRequestField, setChangeRequestField] = useState("");
-  const [profileData, setProfileData] = useState({
-    // Personal Information
-    firstName: "John",
-    lastName: "Doe",
-    regNum: "ST2024001",
-    indexNumber: "2024001",
-    email: "john.doe@university.edu",
-    contactNumber: "+1-234-567-8900",
-    dateOfBirth: "2000-05-15",
-    gender: "male",
-    address: "123 University Street, Academic City, AC 12345",
-
-    // Academic Information
-    program: "Bachelor of Computer Science",
-    department: "Computer Science",
-    year: "3",
-    status: "active",
-
-    // Security
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-
-    // Emergency Contact
-    emergencyContactName: "Jane Doe",
-    emergencyContactNumber: "+1-234-567-8901",
-    emergencyContactRelation: "parent",
-    emergencyContactAddress: "456 Parent Street, Home City, HC 67890",
-  });
+  const [profileData, setProfileData] = useState({});
 
   useEffect(() => {
     loadProfile();
   }, []);
+
+  const {backendUrl} = useContext(AppContext);
 
   const loadProfile = async () => {
     setLoading(true);
     setError("");
 
     try {
-      // Mock API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // Profile data is already set in state
+
+      axios.defaults.withCredentials = true;
+     
+      const {data} = await axios.get(backendUrl + '/student/get')
+
+      if (data.success)  {
+
+        const student = data.message;
+        const emergencyContact = student.emergencyContactInfo;
+        let dep;
+
+        if (student.department == 'CS') {
+          dep = 'Computer Science'
+        }else if (student.department == 'SE') {
+          dep = 'Software Engineering'
+        }else {
+          dep = 'Information System'
+        }
+
+        setProfileData({
+          firstName: student.fullName.split(" ")[0],
+          lastName: student.fullName.split(" ")[1],
+          regNum: student.regiNumber,
+          indexNumber: student.indexNum,
+          email: student.email,
+          contactNumber: student.contactNum,
+          dateOfBirth: student.dob ? student.dob : '',
+          gender: student.gender ? student.gender : '',
+          address: student.address,
+
+          // Academic Information
+          program: `Bachelor of Computing Honours in ${dep}`,
+          department: student.department,
+          semester: student.semester,
+          status: "active",
+
+          // Security
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+
+          // Emergency Contact
+          emergencyContactName: emergencyContact.name,
+          emergencyContactNumber: emergencyContact.contactNum,
+          emergencyContactRelation: emergencyContact.relation,
+          emergencyContactAddress: emergencyContact.address,
+        })
+      }else {
+        toast.error(data.message)
+      }
+
     } catch {
       setError("Failed to load profile. Please try again.");
     } finally {
@@ -56,7 +81,7 @@ const StudentProfile = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { name, value } = e.target;
     setProfileData({ ...profileData, [name]: value });
   };
@@ -117,6 +142,45 @@ const StudentProfile = () => {
     alert("Change request submitted successfully!");
     setShowChangeRequestModal(false);
   };
+
+  const handleUpdate = async (e) => {
+
+    e.preventDefault()
+
+    try {
+
+      axios.defaults.withCredentials = true
+      
+      const {data} = await axios.put(backendUrl + '/student/update', {
+        fullName: profileData.firstName + " " +profileData.lastName,
+        regiNumber: profileData.regNum,
+        indexNum: profileData.indexNumber,
+        email: profileData.email,
+        contactNum: profileData.contactNumber,
+        dob: profileData.dateOfBirth,
+        gender: profileData.gender,
+        address: profileData.address,
+        department: profileData.department,
+        academicYear: profileData.year,
+        emergencyContactInfo: {
+          name: profileData.emergencyContactName,
+          contactNum: profileData.emergencyContactNumber,
+          relation: profileData.emergencyContactRelation,
+          address: profileData.emergencyContactAddress
+        }
+      })
+
+      if (data.success) {
+        toast.success(data.message)
+        setIsEditMode(false)
+      }else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
   const closeModal = () => {
     setShowChangeRequestModal(false);
@@ -405,37 +469,45 @@ const StudentProfile = () => {
 
               <div>
                 <label className="block mb-1 font-medium">
-                  <i className="fas fa-building mr-1"></i>
-                  Department
-                  <i className="fas fa-lock ml-1 text-gray-400" title="Cannot be changed"></i>
-                </label>
-                <input
-                  type="text"
-                  name="department"
-                  value={profileData.department}
-                  className="w-full border px-3 py-2 rounded bg-gray-100"
-                  readOnly
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1 font-medium">
                   <i className="fas fa-calendar-alt mr-1"></i>
-                  Academic Year *
+                  Department
                 </label>
                 <select
-                  name="year"
-                  value={profileData.year}
+                  name="department"
+                  value={profileData.department}
                   onChange={handleInputChange}
                   disabled={!isEditMode}
                   className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
                   required
                 >
-                  <option value="1">1st Year</option>
-                  <option value="2">2nd Year</option>
-                  <option value="3">3rd Year</option>
-                  <option value="4">4th Year</option>
-                  <option value="5">5th Year</option>
+                  <option value="">Select department</option>
+                  <option value="CS">Computer Science</option>
+                  <option value="SE">Software Enginerring</option>
+                  <option value="IS">Information System</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block mb-1 font-medium">
+                  <i className="fas fa-calendar-alt mr-1"></i>
+                  Semester *
+                </label>
+                <select
+                  name="semester"
+                  value={profileData.semester}
+                  onChange={handleInputChange}
+                  disabled={!isEditMode}
+                  className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+                  required
+                >
+                  <option value="1">1st Semester</option>
+                  <option value="2">2nd Semester</option>
+                  <option value="3">3rd Semester</option>
+                  <option value="4">4th Semester</option>
+                  <option value="5">5th Semester</option>
+                  <option value="6">6th Semester</option>
+                  <option value="7">7th Semester</option>
+                  <option value="8">8th Semester</option>
                 </select>
               </div>
 
@@ -603,6 +675,7 @@ const StudentProfile = () => {
                 type="submit"
                 disabled={loading}
                 className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition disabled:bg-green-400"
+                onClick={(e) => handleUpdate(e)}
               >
                 {loading ? "Updating..." : "Update Profile"}
               </button>

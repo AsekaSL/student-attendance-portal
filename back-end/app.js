@@ -2,9 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const studentRouter = require('./routers/studentRoutes.js')
 const authRouter = require('./routers/authRouters.js')
+const courseRouter = require('./routers/courseRoutes.js')
+const professorRouter = require('./routers/professorRoutes.js')
+const sessionRouter = require('./routers/sessionRoutes.js')
+const attendanceRouter = require('./routers/attendanceRoutes.js')
 const adminRouter = require('./routers/adminRoutes.js')
-const sessionRouter = require('./routers/SessionRoutes.js')
-const attendRouter = require('./routers/attendanceRoutes.js')
 const cookieParser = require('cookie-parser')
 
 
@@ -19,8 +21,10 @@ app.use(cookieParser())
 
 app.use('/api/auth', authRouter)
 app.use('/api/student', studentRouter)
-app.use('/api/admin', adminRouter)
+app.use('/api/course', courseRouter)
+app.use('/api/professor', professorRouter)
 app.use('/api/session', sessionRouter)
-app.use('/api/attendance', attendRouter)
+app.use('/api/attendance', attendanceRouter)
+app.use('/api/admin', adminRouter)
 
 module.exports = app;

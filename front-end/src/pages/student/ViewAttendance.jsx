@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import React, { useState, useEffect, useContext } from "react";
+import {AppContext} from '../../context/AppContext.jsx'
+import { toast } from "react-toastify";
 
 const ViewAttendance = () => {
   const [startDate, setStartDate] = useState("");
@@ -9,6 +12,8 @@ const ViewAttendance = () => {
   const [error, setError] = useState("");
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  
+  const {backendUrl} = useContext(AppContext)
 
   useEffect(() => {
     loadAttendanceData();
@@ -47,8 +52,6 @@ const ViewAttendance = () => {
     setError("");
 
     try {
-      // Mock API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Mock attendance data
       const mockData = [
@@ -122,7 +125,17 @@ const ViewAttendance = () => {
         },
       ];
 
-      setAttendanceData(mockData);
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.get(backendUrl + '/student/view-attend')
+      
+      if (data.success) {
+        setAttendanceData(data.message)
+      }else {
+        toast.error(data.message)
+      }
+
+      // setAttendanceData(mockData);
     } catch {
       setError("Failed to load attendance data. Please try again.");
     } finally {

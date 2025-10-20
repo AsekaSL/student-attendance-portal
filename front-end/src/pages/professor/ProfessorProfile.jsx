@@ -1,33 +1,68 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../context/AppContext";
+import { toast } from "react-toastify";
 
 const ProfessorProfile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState({
-    professorId: "PROF001",
-    professorName: "Dr. John Smith",
-    nic: "123456789V",
-    email: "john.smith@university.edu",
-    phoneNumber: "+1-234-567-8900",
-    department: "computer-science",
-    designation: "Associate Professor",
-    dateOfJoin: "2020-01-15",
-    address: "123 University Street, Academic City, AC 12345",
-    qualifications: "Ph.D. in Computer Science, M.Sc. in Software Engineering",
-    specialization: "Machine Learning, Data Structures",
-    officeHours: "Monday-Friday: 9:00 AM - 5:00 PM",
-    researchInterests: "Artificial Intelligence, Computer Vision",
+    professorId: "",
+    professorName: "",
+    nic: "",
+    email: "",
+    phoneNumber: "",
+    department: "",
+    designation: "",
+    dateOfJoin: "",
+    address: "",
+    qualifications: "",
+    specialization: "",
+    officeHours: "Monday - Friday :",
+    researchInterests: "",
   });
+  const {backendUrl} = useContext(AppContext)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfileData({ ...profileData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Save profile data
-    alert("Profile updated successfully!");
-    setIsEditMode(false);
+    try {
+
+      axios.defaults.withCredentials = true
+      
+      const {data} = await axios.put(backendUrl + '/professor/update', {
+        uniId: profileData.professorId,
+        fullName: profileData.professorName,
+        nic: profileData.nic,
+        email: profileData.email,
+        contactNum: profileData.phoneNumber,
+        department: profileData.department,
+        designation: profileData.designation,
+        doj: profileData.dateOfJoin,
+        address: profileData.address,
+        qualifications: profileData.qualifications,
+        specialization: profileData.specialization,
+        officeHours: profileData.officeHours,
+        researchInterests: profileData.researchInterests,
+      })
+
+      if (data.success) {
+        toast.success(data.message)
+        setIsEditMode(false);
+      }else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error)
+    }
+    
+    
   };
 
   const handleLogout = () => {
@@ -36,6 +71,50 @@ const ProfessorProfile = () => {
       alert("Logged out successfully!");
     }
   };
+
+  const getProData = async () => {
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.get(backendUrl + '/professor/get')
+
+      if (data.success) {
+
+        const professor = data.message
+
+        setProfileData({
+          professorId: professor.uniId ,
+          professorName: `Dr. ${professor.fullName}`,
+          nic: professor.nic,
+          email: professor.email,
+          phoneNumber: professor.contactNum,
+          department: professor.department,
+          designation: professor.designation,
+          dateOfJoin: professor.doj,
+          address: professor.address,
+          qualifications: professor.qualifications,
+          specialization: professor.specialization,
+          officeHours: professor.officeHours,
+          researchInterests: professor. researchInterests,
+        })
+      }else{
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error)
+    }
+  }
+
+  const handleUpdate = async () => {
+    
+  }
+
+  useEffect(() => {
+    getProData()
+  }, [])
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -183,12 +262,9 @@ const ProfessorProfile = () => {
                   className="flex-1 border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
                 >
                   <option value="">Select Department</option>
-                  <option value="computer-science">Computer Science</option>
-                  <option value="mathematics">Mathematics</option>
-                  <option value="physics">Physics</option>
-                  <option value="chemistry">Chemistry</option>
-                  <option value="biology">Biology</option>
-                  <option value="engineering">Engineering</option>
+                  <option value="SE">Software Engineering</option>
+                  <option value="CS">Computer Science</option>
+                  <option value="IS">Information System</option>
                 </select>
                 <button
                   type="button"

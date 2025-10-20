@@ -1,4 +1,8 @@
 const Admin = require('../model/Admin')
+const Student = require('../model/Student')
+const Professor = require('../model/Professor.js')
+const Course = require('../model/Course.js')
+const Attendance = require('../model/Attendance.js')
 
 // Get single admin by email
 const getAdmin = async (req, res) => {
@@ -98,9 +102,48 @@ const deleteAdmin = async (req, res) => {
     }
 };
 
+const getDashboard = async (req, res) => {
+    try {
+        const totalStudents = await Student.countDocuments()
+
+        const totalProfessors = await Professor.countDocuments()
+
+        const activeCourses = await Course.countDocuments({ status: 'active' })
+
+        const startOfDay = new Date()
+        startOfDay.setHours(0, 0, 0, 0)
+
+        const endOfDay = new Date()
+        endOfDay.setHours(23, 59, 59, 999)
+
+        // get all attendance records with today's date range
+        const todayAttendanceRecords = await Attendance.find({
+            date: { $gte: startOfDay.getTime(), $lte: endOfDay.getTime() },
+        })
+
+        const totalAttendances = todayAttendanceRecords.length
+        const presentCount = todayAttendanceRecords.filter(a => a.status === 'present').length
+
+        const attendancePercentage =
+            totalAttendances > 0 ? ((presentCount / totalAttendances) * 100).toFixed(1) : 0
+
+
+        return res.send({success: true, message: {
+            totalStudents,
+            totalProfessors,
+            activeCourses,
+            attendancePercentage
+        }})
+
+    } catch (error) {
+        return res.send({success: false, message: error.message})
+    }
+}
+
 module.exports = {
     getAdmin,
     getAllAdmins,
     updateAdmin,
-    deleteAdmin
+    deleteAdmin,
+    getDashboard
 };

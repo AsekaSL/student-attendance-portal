@@ -1,38 +1,82 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../context/AppContext.jsx";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const CourseManagement = () => {
+
   const [formData, setFormData] = useState({
+    _id: "",
     code: "",
     name: "",
     credits: "",
   });
-
   const [courses, setCourses] = useState([
     { code: "CS101", name: "Introduction to Computing", credits: 3 },
     { code: "SE201", name: "Software Engineering", credits: 4 },
     { code: "IS301", name: "Information Systems", credits: 3 },
   ]);
-
   const [editIndex, setEditIndex] = useState(null);
+  const {backendUrl} = useContext(AppContext)
+
+  const getCourses = async () => {
+    try {
+      axios.defaults.withCredentials = true
+      
+      const {data} = await axios.get(backendUrl + '/course/get-prof')
+      
+      if(data.success) {
+        setCourses(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (editIndex !== null) {
-      const updatedCourses = [...courses];
-      updatedCourses[editIndex] = formData;
-      setCourses(updatedCourses);
-      setEditIndex(null);
-    } else {
-      setCourses([...courses, formData]);
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.put(backendUrl + '/course/update-prof', {
+        code : formData.code,
+        _id: formData._id,
+        name: formData.name,
+        credits: formData.credits
+      })
+
+      if(data.success) {
+        toast.success(data.message)
+
+        setEditIndex(null);
+        setFormData({ code: "", name: "", credits: "" });
+        getCourses()
+      }else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
     }
 
-    setFormData({ code: "", name: "", credits: "" });
+    // if (editIndex !== null) {
+    //   const updatedCourses = [...courses];
+    //   updatedCourses[editIndex] = formData;
+    //   setCourses(updatedCourses);
+    //   setEditIndex(null);
+    // } else {
+    //   setCourses([...courses, formData]);
+    // }
+
+    // setFormData({ code: "", name: "", credits: "" });
   };
 
   const handleEdit = (index) => {
@@ -46,6 +90,10 @@ const CourseManagement = () => {
       setCourses(updatedCourses);
     }
   };
+
+  useEffect(() => {
+    getCourses()
+  },[])
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">

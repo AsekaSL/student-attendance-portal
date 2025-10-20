@@ -6,6 +6,9 @@ const Login = () => {
     password: "",
   });
 
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -13,8 +16,9 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
-    alert("Login submitted (check console)");
+    
+    console.log(`Email : ${email} , Password : ${password}`)
+
   };
 
   return (
@@ -29,7 +33,7 @@ const Login = () => {
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
@@ -41,7 +45,7 @@ const Login = () => {
               type="password"
               name="password"
               value={formData.password}
-              onChange={handleChange}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />

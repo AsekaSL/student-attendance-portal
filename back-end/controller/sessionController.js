@@ -1,36 +1,78 @@
+const Course = require('../model/Course')
+const Professor = require('../model/Professor.js')
 const Session = require('../model/Session.js')
+const User = require('../model/User.js')
 
 const addSession = async (req, res) => {
     try {
-        const {course, lectureTitle, qrTime, date} = req.body
+        
+        const {courseId, title, date, validTime}  = req.body
 
-        if (!course) {
-            return res.send({ success: false, message: "Missing course" });
+        const course = await Course.findById(courseId);
+
+        if (!courseId && !course) {
+            return res.send({success: false, message: 'Invalid Course'})
         }
 
-        if (!lectureTitle) {
-            return res.send({ success: false, message: "Missing Lecture Title" });
+        if(!title) {
+            return res.send({success: false, message: 'Missing Title'})
         }
 
-        if (!qrTime) {
-            return res.send({ success: false, message: "Missing QR Valid Time" });
+        if(!date) {
+            return res.send({success: false, message: 'Missing date'})
         }
 
-
-        if (!date) {
-            return res.send({ success: false, message: "Missing Date" });
+        if(!validTime) {
+            return res.send({success: false, message: 'Missing QR valid Time'})
         }
 
+        const validTimeExpireAt = Date.now() + validTime
 
-        const session = new Session({course, lectureTitle, qrTime, date})
+        const session = new Session({
+            courseId, title,
+            date, validTimeExpireAt
+        })
 
-        await session.save();
+        const response = await session.save()
 
-        return res.send({success: true, message: 'Succsfuly create session', sessionId: session._id})
+        if (!response) {
+            return res.send({success: false, message: 'Session not created'})
+        }
+
+        return res.send({success: true, message: 'Succsfully created!', sessionId: response._id})
+
 
     } catch (error) {
         return res.send({success: false, message: error.message})
     }
 }
 
-exports.addSession = addSession;
+const getSessionActive = async (req, res) => {
+    try {
+        
+        const {userId} = req.body
+
+        const user = await User.findById(userId)
+
+        const professor = await Professor.findOne({email: user.email})
+
+        const session = await Session.findOne({isSessionEnd: false}).populate({
+            path: 'courseId',
+            match: {assignedProf: professor._id}
+        })
+
+        
+
+        if(!session.courseId) {
+            return res.send({success: false, message: 'No active sessions'})
+        }
+
+        return res.send({success: true, message: session})
+
+    } catch (error) {
+        return res.send({success: false, message: error.message})
+    }
+}
+
+exports.addSession = addSession
+exports.getSessionActive = getSessionActive

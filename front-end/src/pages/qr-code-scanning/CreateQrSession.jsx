@@ -1,45 +1,125 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AppContext } from "../../context/AppContext";
 
 const CreateQrSession = () => {
   const [formData, setFormData] = useState({
-    courseName: "",
+    courseId: "",
     lectureTitle: "",
     qrValidTime: "",
     date: "",
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+  const {backendUrl} = useContext(AppContext)
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      // Navigate to generated QR page with session data
-      navigate("/generated-qr", {
-        state: {
-          sessionData: formData,
-          qrCode: "sample-qr-code-data" // In real app, this would be generated
-        }
-      });
-    }, 1000);
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.post(backendUrl + '/session/add', {
+        courseId: formData.courseId,
+        title: formData.lectureTitle,
+        date: formData.date,
+        validTime: formData.qrValidTime * 60 * 1000 // To milisecond
+      })
+      
+      if (data.success) {
+        toast.success(data.message)
+
+        navigate("/generated-qr", {
+          state: {
+            sessionData: formData,
+            qrCode: "sample-qr-code-data", // In real app, this would be generated,
+            sessionId: data.sessionId
+          }
+        });
+
+      }else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+    }
+
   };
 
-  const courses = [
-    { value: "web-technology", label: "Web Technology" },
-    { value: "artificial-intelligence", label: "Artificial Intelligence" },
-    { value: "data-structures", label: "Data Structures" },
-    { value: "software-engineering", label: "Software Engineering" },
-  ];
+  const getCourses = async () => {
+    try {
+      
+      const {data} = await axios.get(backendUrl + '/course/get-prof')
 
+      if(data.success) {
+        setCourses(data.message)
+      }else {
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const handleStillInSession = async () => {
+    try {
+      
+      axios.defaults.withCredentials = true
+
+      const {data} = await axios.get(backendUrl + '/session/get-active-session')
+
+      if(data.success) {
+        console.log(data.message)
+        const session = data.message
+
+        const newFormData = {
+          courseId: session.courseId._id,
+          lectureTitle: session.title,
+          qrValidTime:
+            Math.floor((session.validTimeExpireAt - Date.now()) / (1000 * 60)) < 0
+              ? 0
+              : Math.floor((session.validTimeExpireAt - Date.now()) / (1000 * 60)),
+          date: session.date,
+        };
+
+        if(newFormData) {
+          navigate("/generated-qr", {
+          state: {
+            sessionData: newFormData,
+            qrCode: "sample-qr-code-data", // In real app, this would be generated,
+            sessionId: session._id
+          }
+        });
+        }
+        
+        
+      }else {
+        console.log(data.message)
+      }
+
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    handleStillInSession()
+    getCourses()
+  }, [])
+  
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
@@ -67,16 +147,16 @@ const CreateQrSession = () => {
                 Course Name
               </label>
               <select
-                name="courseName"
-                value={formData.courseName}
+                name="courseId"
+                value={formData.courseId}
                 onChange={handleChange}
                 className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
                 required
               >
                 <option value="">Select Course</option>
                 {courses.map(course => (
-                  <option key={course.value} value={course.value}>
-                    {course.label}
+                  <option key={course.code} value={course._id}>
+                    {course.name}
                   </option>
                 ))}
               </select>
