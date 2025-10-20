@@ -8,11 +8,12 @@ const sessionRouter = require('./routers/sessionRoutes.js')
 const attendanceRouter = require('./routers/attendanceRoutes.js')
 const adminRouter = require('./routers/adminRoutes.js')
 const cookieParser = require('cookie-parser')
+require('dotenv').config();
 
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:5173']
+const allowedOrigins = [process.env.VITE_REACT_APP]
 
 app.use(cors({origin: allowedOrigins, credentials: true}));
 app.use(express.urlencoded({extended: true}));
